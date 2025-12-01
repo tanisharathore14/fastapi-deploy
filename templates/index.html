@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Hello FastAPI</title>
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; padding: 2rem; }
+    .card { max-width: 600px; margin: 0 auto; padding: 1.25rem; border: 1px solid #e5e7eb; border-radius: 8px; }
+    input, button { padding: 0.5rem; font-size: 1rem; }
+    .result { margin-top: 1rem; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Hello FastAPI</h1>
+    <p>Type your name and press <strong>Greet</strong> (the page will POST JSON to <code>/api/hello</code>).</p>
+
+    <label>
+      Name:
+      <input id="name" type="text" placeholder="Type a name (e.g., Alice)" />
+    </label>
+    <button id="greetBtn">Greet</button>
+
+    <div class="result" id="result"></div>
+
+    <hr />
+    <p>Also try the endpoints from terminal:</p>
+    <pre>
+GET  /api/hello
+POST /api/hello  -> JSON body: {"name":"Alice"}
+    </pre>
+  </div>
+
+  <script>
+    document.getElementById('greetBtn').addEventListener('click', async () => {
+      const name = document.getElementById('name').value;
+      const resEl = document.getElementById('result');
+      resEl.textContent = "Sending...";
+      try {
+        const resp = await fetch('/api/hello', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name })
+        });
+        const data = await resp.json();
+        resEl.textContent = data.message ?? JSON.stringify(data);
+      } catch (err) {
+        resEl.textContent = "Error: " + err;
+      }
+    });
+  </script>
+</body>
+</html>
